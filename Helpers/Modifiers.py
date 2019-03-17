@@ -1,3 +1,5 @@
+import random
+
 import bpy
 import numpy
 
@@ -31,7 +33,7 @@ def decimateMeshes(decRatio):
         mesh.select = False
 
 
-def normalize_scale(targetSize):  #numpy.array([1.0, 1.0, 1.0])
+def normalize_scale(targetSize):  # numpy.array([1.0, 1.0, 1.0])
     bpy.context.area.type = 'VIEW_3D'
 
     maxX = maxY = maxZ = 0
@@ -73,10 +75,48 @@ def normalize_scale(targetSize):  #numpy.array([1.0, 1.0, 1.0])
         if mesh.type == 'MESH':
             mesh.location = (0, 0, 0)
 
-    bpy.context.area.type = 'TEXT_EDITOR'
+    bpy.context.area.type = 'CONSOLE'
 
 
 def cleanAllDecimateModifiers(obj):
     for m in obj.modifiers:
         if (m.type == "DECIMATE"):
             obj.modifiers.remove(modifier=m)
+
+
+def removeJunk():
+    for mesh in bpy.data.objects:
+        if '.001' in mesh.name:
+            mesh.select = True
+        if 'node' in mesh.name:
+            mesh.select = True
+        if 'light' in mesh.name:
+            mesh.select = True
+    bpy.ops.object.delete()
+
+
+def colourObjects():
+    bpy.ops.object.select_all(action='DESELECT')
+    for obj in bpy.data.objects:
+        if obj.type != 'MESH':
+            continue
+
+        obj.select = True
+
+        rgb = [random.random() for i in range(3)]
+        bpy.context.scene.objects.active = obj
+
+        mat = bpy.data.materials.new("PKHG")
+        mat.diffuse_color = rgb
+
+        # Assign it to object
+        if obj.data.materials:
+            # assign to 1st material slot
+            obj.data.materials[0] = mat
+        else:
+            # no slots
+            obj.data.materials.append(mat)
+
+        obj.select = False
+
+

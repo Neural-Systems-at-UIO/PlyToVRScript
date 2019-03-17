@@ -11,7 +11,7 @@ import numpy
 
 ##############   PARAMETERS   ########################
 from Helpers.Importers import import_stl, import_dae, export_all_fbx
-from Helpers.Modifiers import decimateMeshes, normalize_scale, smoothMeshes
+from Helpers.Modifiers import decimateMeshes, colourObjects, removeJunk, normalize_scale, smoothMeshes
 
 folderPath = "D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/SourceData"
 vertexLimit = 1500000
@@ -57,24 +57,15 @@ if totalVertexCount > vertexLimit:
     ratio = vertexLimit / totalVertexCount
     decimateMeshes(ratio)
 
+colourObjects()
+
 for mesh in bpy.data.objects:
     if mesh.type == 'MESH':
         totalVertexCountAfter += len(mesh.data.vertices)
 
 bpy.ops.object.select_all(action='DESELECT')
 # Remove junk and bloat data
-for mesh in bpy.data.objects:
-    if '.001' in mesh.name:
-        mesh.select = True
-
-for mesh in bpy.data.objects:
-    if 'node' in mesh.name:
-        mesh.select = True
-
-for mesh in bpy.data.objects:
-    if 'light' in mesh.name:
-        mesh.select = True
-bpy.ops.object.delete()
+removeJunk()
 
 normalize_scale(targetSize)
 
