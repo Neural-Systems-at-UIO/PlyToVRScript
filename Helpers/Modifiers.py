@@ -75,7 +75,7 @@ def normalize_scale(targetSize):  # numpy.array([1.0, 1.0, 1.0])
         if mesh.type == 'MESH':
             mesh.location = (0, 0, 0)
 
-    bpy.context.area.type = 'CONSOLE'
+    bpy.context.area.type = 'TEXT_EDITOR'
 
 
 def cleanAllDecimateModifiers(obj):
