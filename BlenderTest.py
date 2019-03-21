@@ -3,78 +3,82 @@ import bpy
 import time
 import numpy
 
-
-#How to use
-#filename = "D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/BlenderTest.py"
-#exec(compile(open(filename).read(), filename, 'exec'))
+# How to use
+# filename = "D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/BlenderTest.py"
+# exec(compile(open(filename).read(), filename, 'exec'))
 
 
 ##############   PARAMETERS   ########################
+from ConfigurationManager.ConfigReader import ConfigReader
+from ConfigurationManager.ConfigWriter import ConfigWriter
 from Helpers.Importers import import_stl, import_dae, export_all_fbx
 from Helpers.Modifiers import decimateMeshes, colourObjects, removeJunk, normalize_scale, smoothMeshes
 
-folderPath = "D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/SourceData"
-vertexLimit = 1500000
-fileTypeToImport = 'stl'
-exportToFBX = False
-targetSize = numpy.array([1.0, 1.0, 1.0])
-attemptSmoothing = True
+if __name__ == "__main__":
+    config = ConfigReader()
+    config.readConfig()
 
+    folderPath = "D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/SourceData"
+    vertexLimit = 1500000
+    fileTypeToImport = 'stl'
+    exportToFBX = False
+    targetSize = numpy.array([1.0, 1.0, 1.0])
+    attemptSmoothing = True
 
-######################################################
+    ######################################################
 
-startTime = time.time()
+    startTime = time.time()
 
-for o in bpy.data.objects:
-    o.select = True
+    for o in bpy.data.objects:
+        print(dir(o))
+        o.select = True
 
-bpy.ops.object.delete()
+    bpy.ops.object.delete()
 
-for root, dir, files in os.walk(folderPath):
-    for file in files:
-        if file.endswith("stl") and fileTypeToImport == 'stl':
-            import_stl(folderPath, file)
-            print("Importing " + file)
-        elif file.endswith("dae") and fileTypeToImport == 'dae':
-            import_dae(folderPath, file)
-            print("Importing " + file)
+    for root, dir, files in os.walk(folderPath):
+        for file in files:
+            if file.endswith("stl") and fileTypeToImport == 'stl':
+                import_stl(folderPath, file)
+                print("Importing " + file)
+            elif file.endswith("dae") and fileTypeToImport == 'dae':
+                import_dae(folderPath, file)
+                print("Importing " + file)
 
-# bpy.ops.wm.save_mainfile(filepath="") Bruk denne for lagring av blender filene.
+    # bpy.ops.wm.save_mainfile(filepath="") Bruk denne for lagring av blender filene.
 
+    totalVertexCount = 0
 
-totalVertexCount = 0
+    for mesh in bpy.data.objects:
+        if mesh.type != 'MESH':
+            continue
+        totalVertexCount += len(mesh.data.vertices)
 
-for mesh in bpy.data.objects:
-    if mesh.type != 'MESH':
-        continue
-    totalVertexCount += len(mesh.data.vertices)
+    print("Number of verts before reduction is " + str(totalVertexCount))
 
-print("Number of verts before reduction is " + str(totalVertexCount))
+    totalVertexCountAfter = 0
 
-totalVertexCountAfter = 0
+    if totalVertexCount > vertexLimit:
+        ratio = vertexLimit / totalVertexCount
+        decimateMeshes(ratio)
 
-if totalVertexCount > vertexLimit:
-    ratio = vertexLimit / totalVertexCount
-    decimateMeshes(ratio)
+    colourObjects()
 
-colourObjects()
+    for mesh in bpy.data.objects:
+        if mesh.type == 'MESH':
+            totalVertexCountAfter += len(mesh.data.vertices)
 
-for mesh in bpy.data.objects:
-    if mesh.type == 'MESH':
-        totalVertexCountAfter += len(mesh.data.vertices)
+    bpy.ops.object.select_all(action='DESELECT')
+    # Remove junk and bloat data
+    removeJunk()
 
-bpy.ops.object.select_all(action='DESELECT')
-# Remove junk and bloat data
-removeJunk()
+    normalize_scale(targetSize)
 
-normalize_scale(targetSize)
+    if attemptSmoothing:
+        smoothMeshes()
 
-if attemptSmoothing:
-    smoothMeshes()
+    # Export processed files
+    if exportToFBX:
+        export_all_fbx(folderPath)
 
-# Export processed files
-if exportToFBX:
-    export_all_fbx(folderPath)
-
-print("Number of verts after reduction is " + str(totalVertexCount))
-print("Execution time " + str(time.time() - startTime))
+    print("Number of verts after reduction is " + str(totalVertexCount))
+    print("Execution time " + str(time.time() - startTime))
