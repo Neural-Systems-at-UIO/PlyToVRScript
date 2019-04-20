@@ -80,5 +80,5 @@ if __name__ == "__main__":
     if exportToFBX:
         export_all_fbx(folderPath)
 
-    print("Number of verts after reduction is " + str(totalVertexCount))
-    print("Execution time " + str(time.time() - startTime))
+print("Number of verts after reduction is " + str(totalVertexCountAfter))
+print("Execution time " + str(time.time() - startTime))
