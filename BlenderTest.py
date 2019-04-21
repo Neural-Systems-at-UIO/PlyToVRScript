@@ -3,7 +3,16 @@ import bpy
 import time
 import numpy
 
+
+
+Idea
+Make a script that is the GUI and then make that script launch a terminal, or have the script itself be launched in a terminal.
+The first script opens a GUI and then the script launches blender with another script based on the settings from the GUI.
+
+
+
 # How to use
+# blender --background --python C:/Projects/PlyToVRScript/BlenderTest.py
 # filename = "D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/BlenderTest.py"
 # exec(compile(open(filename).read(), filename, 'exec'))
 
@@ -18,10 +27,10 @@ if __name__ == "__main__":
     config = ConfigReader()
     config.readConfig()
 
-    folderPath = "D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/SourceData"
+    folderPath = "C:/Projects/PlyToVRScript/SourceData"
     vertexLimit = 1500000
     fileTypeToImport = 'stl'
-    exportToFBX = False
+    exportToFBX = True
     targetSize = numpy.array([1.0, 1.0, 1.0])
     attemptSmoothing = True
 
@@ -80,5 +89,5 @@ if __name__ == "__main__":
     if exportToFBX:
         export_all_fbx(folderPath)
 
-print("Number of verts after reduction is " + str(totalVertexCountAfter))
-print("Execution time " + str(time.time() - startTime))
+    print("Number of verts after reduction is " + str(totalVertexCountAfter))
+    print("Execution time " + str(time.time() - startTime))
