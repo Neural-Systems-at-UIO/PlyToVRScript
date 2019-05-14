@@ -1,0 +1,13 @@
+[general]
+targetsize = [2.0, 1.0, 1.0]
+
+[modifiers]
+vertexlimit = 1500000
+smoothing = True
+decimate = False
+
+[input/output]
+folderpath = D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/SourceData
+exporttofbx = False
+filetypetoimport = ['stl']
+
