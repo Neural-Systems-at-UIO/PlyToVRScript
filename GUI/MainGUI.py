@@ -5,7 +5,7 @@ def setSourceFolder():
     file = filedialog.askopenfilename()
     txt.insert(0, str(file))
 
-
+#Make these into hardcoded settings.
 fields = ["targetsize", "vertexlimit", "smoothing", "decimate", "folderpath", "exporttofbx", "filetypetoimport"]
 
 def fetch(entries):
