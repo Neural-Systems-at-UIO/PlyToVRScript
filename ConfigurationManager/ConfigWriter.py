@@ -12,7 +12,6 @@ class ConfigWriter:
     config = ConfigParser()
 
     config["general"] = {
-        "folderPath": "D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/SourceData",
         "targetSize": "[1.0, 1.0, 1.0]"
     }
 
