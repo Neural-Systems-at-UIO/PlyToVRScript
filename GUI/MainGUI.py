@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import filedialog
 import tkinter as TKINTER
+from ConfigurationManager import Configuration
+import ast
 
 
 def setSourceFolder():
@@ -9,13 +11,22 @@ def setSourceFolder():
 
 
 def customPrint():
-	print("Target Size: " + str(targetsize.get()))
-	print("Vertex Limit: " + str(vertexlimit.get()))
-	print("Smoothing: " + str(smoothing.get()))
-	print("Decimate: " + str(decimate.get()))
-	print("ExportToFbx: " + str(exporttofbx.get()))
-	print("File Types: " + str(filetypetoimport.get()))
-	print("Source file path: " + str(txt.get()))
+	configuration = Configuration.Configuration()
+	configuration.decimate = decimate.get()
+	configuration.smoothing = smoothing.get()
+	configuration.targetSize = ast.literal_eval(targetsize.get())
+	configuration.exportToFBX = exporttofbx.get()
+	configuration.folderPath = txt.get()
+	configuration.vertexLimit = int(vertexlimit.get())
+	configuration.fileTypeToImport = ast.literal_eval(filetypetoimport.get())
+	print("Target Size: " + str(type(configuration.targetSize)) + " : " + str(configuration.targetSize))
+	print("Vertex Limit: " + str(type(configuration.vertexLimit)) + " : " + str(configuration.vertexLimit))
+	print("Smoothing: " + str(type(configuration.smoothing)) + " : " + str(configuration.smoothing))
+	print("Decimate: " + str(type(configuration.decimate)) + " : " + str(configuration.decimate))
+	print("ExportToFbx: " + str(type(configuration.exportToFBX)) + " : " + str(configuration.exportToFBX))
+	print("File Types: " + str(type(configuration.fileTypeToImport)) + " : " + str(configuration.fileTypeToImport))
+	print("Source file path: " + str(type(configuration.folderPath)) + " : " + str(configuration.folderPath))
+
 
 
 window = Tk()
