@@ -48,5 +48,5 @@ class ConfigWriter:
 			"fileTypeToImport": str(configuration.fileTypeToImport)
 		}
 
-		with open("D:/config", 'w+') as file:
+		with open("config", 'w+') as file:
 			config.write(file)

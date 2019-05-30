@@ -36,7 +36,6 @@ def storeConfiguration():
 	printConfiguration()
 
 
-
 window = Tk()
 
 window.title("Welcome to the ply converter")
