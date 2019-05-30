@@ -5,7 +5,11 @@ from ConfigurationManager import Configuration
 from ConfigurationManager import ConfigWriter
 from ConfigurationManager import ConfigReader
 import ast
+import subprocess
 
+
+def runCommand():
+	subprocess.run(["python", "MainGUI.py"], shell=True)
 
 def setSourceFolder():
 	file = filedialog.askopenfilename()
@@ -98,10 +102,14 @@ filetypetoimportlabel.grid(column=0, sticky=TKINTER.W, row=10)
 filetypetoimport = Entry(window, width=122)
 filetypetoimport.grid(column=1, sticky=TKINTER.W, row=10)
 
-startbtn = Button(window, text="Start", command=storeConfiguration)
+startbtn = Button(window, text="Store config", command=storeConfiguration)
 startbtn.grid(column=0, sticky=TKINTER.W, row=11)
 
-startbtn = Button(window, text="Read and print", command=loadConfiguration)
+startbtn = Button(window, text="Read config", command=loadConfiguration)
 startbtn.grid(column=1, sticky=TKINTER.W, row=11)
+
+runbtn = Button(window, text="Run", command=runCommand)
+runbtn.grid(column=2, sticky=TKINTER.W, row=11)
+
 
 window.mainloop()
