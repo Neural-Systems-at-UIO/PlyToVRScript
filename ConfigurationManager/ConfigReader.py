@@ -9,7 +9,7 @@ class ConfigReader:
 
 
     def readConfig(self):
-        self.config.read("D:/Users/NoobsDeSroobs/PycharmProjects/PlyToVRScript/config")
+        self.config.read("D:/config")
 
         configuration = Configuration()
         temp = self.config.get("general", "targetSize", fallback="[1.0, 1.0, 1.0]")

@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import filedialog
 import tkinter as TKINTER
 from ConfigurationManager import Configuration
+from ConfigurationManager import ConfigWriter
+from ConfigurationManager import ConfigReader
 import ast
 
 
@@ -9,16 +11,9 @@ def setSourceFolder():
 	file = filedialog.askopenfilename()
 	txt.insert(0, str(file))
 
-
-def customPrint():
-	configuration = Configuration.Configuration()
-	configuration.decimate = decimate.get()
-	configuration.smoothing = smoothing.get()
-	configuration.targetSize = ast.literal_eval(targetsize.get())
-	configuration.exportToFBX = exporttofbx.get()
-	configuration.folderPath = txt.get()
-	configuration.vertexLimit = int(vertexlimit.get())
-	configuration.fileTypeToImport = ast.literal_eval(filetypetoimport.get())
+def printConfiguration():
+	confgReader = ConfigReader.ConfigReader()
+	configuration = confgReader.readConfig()
 	print("Target Size: " + str(type(configuration.targetSize)) + " : " + str(configuration.targetSize))
 	print("Vertex Limit: " + str(type(configuration.vertexLimit)) + " : " + str(configuration.vertexLimit))
 	print("Smoothing: " + str(type(configuration.smoothing)) + " : " + str(configuration.smoothing))
@@ -26,6 +21,19 @@ def customPrint():
 	print("ExportToFbx: " + str(type(configuration.exportToFBX)) + " : " + str(configuration.exportToFBX))
 	print("File Types: " + str(type(configuration.fileTypeToImport)) + " : " + str(configuration.fileTypeToImport))
 	print("Source file path: " + str(type(configuration.folderPath)) + " : " + str(configuration.folderPath))
+
+def storeConfiguration():
+	configuration = Configuration.Configuration()
+	configuration.decimate = bool(decimate.get())
+	configuration.smoothing = bool(smoothing.get())
+	configuration.targetSize = ast.literal_eval(targetsize.get())
+	configuration.exportToFBX = bool(exporttofbx.get())
+	configuration.folderPath = txt.get()
+	configuration.vertexLimit = int(vertexlimit.get())
+	configuration.fileTypeToImport = ast.literal_eval(filetypetoimport.get())
+	confgWriter = ConfigWriter.ConfigWriter()
+	confgWriter.storeConfig(configuration)
+	printConfiguration()
 
 
 
@@ -76,7 +84,10 @@ filetypetoimportlabel.grid(column=0, sticky=TKINTER.W, row=10)
 filetypetoimport = Entry(window, width=122)
 filetypetoimport.grid(column=1, sticky=TKINTER.W, row=10)
 
-startbtn = Button(window, text="Start", command=customPrint)
+startbtn = Button(window, text="Start", command=storeConfiguration)
 startbtn.grid(column=0, sticky=TKINTER.W, row=11)
+
+startbtn = Button(window, text="Read and print", command=printConfiguration)
+startbtn.grid(column=1, sticky=TKINTER.W, row=11)
 
 window.mainloop()
