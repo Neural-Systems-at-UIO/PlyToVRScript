@@ -9,11 +9,10 @@ import ast
 
 def setSourceFolder():
 	file = filedialog.askopenfilename()
-	txt.insert(0, str(file))
+	sourceFolder.delete(0, 'end')
+	sourceFolder.insert(0, str(file))
 
-def printConfiguration():
-	confgReader = ConfigReader.ConfigReader()
-	configuration = confgReader.readConfig()
+def printConfiguration(configuration):
 	print("Target Size: " + str(type(configuration.targetSize)) + " : " + str(configuration.targetSize))
 	print("Vertex Limit: " + str(type(configuration.vertexLimit)) + " : " + str(configuration.vertexLimit))
 	print("Smoothing: " + str(type(configuration.smoothing)) + " : " + str(configuration.smoothing))
@@ -28,12 +27,28 @@ def storeConfiguration():
 	configuration.smoothing = bool(smoothing.get())
 	configuration.targetSize = ast.literal_eval(targetsize.get())
 	configuration.exportToFBX = bool(exporttofbx.get())
-	configuration.folderPath = txt.get()
+	configuration.folderPath = sourceFolder.get()
 	configuration.vertexLimit = int(vertexlimit.get())
 	configuration.fileTypeToImport = ast.literal_eval(filetypetoimport.get())
 	confgWriter = ConfigWriter.ConfigWriter()
 	confgWriter.storeConfig(configuration)
-	printConfiguration()
+	printConfiguration(configuration)
+
+def loadConfiguration():
+	confgReader = ConfigReader.ConfigReader()
+	configuration = confgReader.readConfig()
+	decimate.set(configuration.decimate)
+	smoothing.set(configuration.smoothing)
+	targetsize.delete(0, 'end')
+	targetsize.insert(0, str(configuration.targetSize))
+	exporttofbx.set(configuration.exportToFBX)
+	sourceFolder.delete(0, 'end')
+	sourceFolder.insert(0, configuration.folderPath)
+	vertexlimit.delete(0, 'end')
+	vertexlimit.insert(0, configuration.vertexLimit)
+	filetypetoimport.delete(0, 'end')
+	filetypetoimport.insert(0, str(configuration.fileTypeToImport))
+	printConfiguration(configuration)
 
 
 window = Tk()
@@ -45,8 +60,8 @@ window.geometry('1260x720')
 lbl = Label(window, text="Model source files folder")
 lbl.grid(column=0, row=0)
 
-txt = Entry(window, width=122)
-txt.grid(column=1, row=0, sticky=TKINTER.W, columnspan=3)
+sourceFolder = Entry(window, width=122)
+sourceFolder.grid(column=1, row=0, sticky=TKINTER.W, columnspan=3)
 selectfolderbtn = Button(window, text="Select folder", command=setSourceFolder)
 selectfolderbtn.grid(column=2, sticky=TKINTER.W, row=0)
 
@@ -86,7 +101,7 @@ filetypetoimport.grid(column=1, sticky=TKINTER.W, row=10)
 startbtn = Button(window, text="Start", command=storeConfiguration)
 startbtn.grid(column=0, sticky=TKINTER.W, row=11)
 
-startbtn = Button(window, text="Read and print", command=printConfiguration)
+startbtn = Button(window, text="Read and print", command=loadConfiguration)
 startbtn.grid(column=1, sticky=TKINTER.W, row=11)
 
 window.mainloop()

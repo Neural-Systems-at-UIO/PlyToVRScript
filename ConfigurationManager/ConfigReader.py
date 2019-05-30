@@ -12,8 +12,7 @@ class ConfigReader:
         self.config.read("config")
 
         configuration = Configuration()
-        temp = self.config.get("general", "targetSize")
-        configuration.targetSize = eval(temp)
+        configuration.targetSize = eval(self.config.get("general", "targetSize"))
 
         configuration.vertexLimit = self.config.getint("modifiers", "vertexlimit")
         configuration.smoothing = self.config.getboolean("modifiers", "smoothing")
