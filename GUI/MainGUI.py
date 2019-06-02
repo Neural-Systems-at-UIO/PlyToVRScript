@@ -47,7 +47,7 @@ def runCommand():
 	t.start()
 
 def setSourceFolder():
-	file = filedialog.askopenfilename()
+	file = filedialog.askdirectory()
 	sourceFolder.delete(0, 'end')
 	sourceFolder.insert(0, str(file))
 
