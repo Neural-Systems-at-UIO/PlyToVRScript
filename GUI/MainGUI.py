@@ -10,7 +10,9 @@ import threading
 
 def updateOutputWindow():
 	print("running blender...")
-	command = ["blender", "--background", "--python", "../BlenderTest.py"]
+	command = ["blender", "--python", "../BlenderTest.py"]
+	if openGUI.get() is 0:
+		command.insert(1, "--background")
 	#command = [sys.executable, "-u", "testSubProcess.py"]
 	blenderProcess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	for stdout_line in iter(blenderProcess.stdout.readline, ""):
@@ -146,5 +148,10 @@ runbtn.grid(column=2, sticky=TKINTER.W, row=11)
 
 outputTextBox = Text(window, width=108, state='disabled', height=20)
 outputTextBox.grid(column=0, sticky=TKINTER.W, row=14, columnspan=3)
+
+openGUIlabel = Label(window, text="Open GUI")
+openGUIlabel.grid(column=1, sticky=TKINTER.E, row=12)
+openGUI = IntVar()
+Checkbutton(window, variable=openGUI).grid(column=2, sticky=TKINTER.W, row=12)
 
 window.mainloop()
