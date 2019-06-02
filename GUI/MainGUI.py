@@ -6,10 +6,29 @@ from ConfigurationManager import ConfigWriter
 from ConfigurationManager import ConfigReader
 import ast
 import subprocess
+import threading
 
+def updateOutputWindow():
+	print("running blender...")
+	command = ["blender", "--background", "--python", "../BlenderTest.py"]
+	#command = [sys.executable, "-u", "testSubProcess.py"]
+	blenderProcess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+	for stdout_line in iter(blenderProcess.stdout.readline, ""):
+		print(stdout_line)
+		outputTextBox.configure(state='normal')
+		outputTextBox.insert('end', stdout_line)
+		outputTextBox.configure(state='disabled')
+	blenderProcess.stdout.close()
+
+
+# return_code = blenderProcess.wait()
+# if return_code:
+# 	raise subprocess.CalledProcessError(return_code, command)
 
 def runCommand():
-	subprocess.run(["python", "MainGUI.py"], shell=True)
+	t = threading.Thread(target=updateOutputWindow)
+	t.daemon = True  # close pipe if GUI process exits
+	t.start()
 
 def setSourceFolder():
 	file = filedialog.askopenfilename()
@@ -111,5 +130,7 @@ startbtn.grid(column=1, sticky=TKINTER.W, row=11)
 runbtn = Button(window, text="Run", command=runCommand)
 runbtn.grid(column=2, sticky=TKINTER.W, row=11)
 
+outputTextBox = Text(window, width=108, state='disabled', height=20)
+outputTextBox.grid(column=0, sticky=TKINTER.W, row=14, columnspan=3)
 
 window.mainloop()
