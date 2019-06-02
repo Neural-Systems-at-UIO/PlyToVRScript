@@ -13,6 +13,7 @@ class ConfigReader:
 
         configuration = Configuration()
         configuration.targetSize = eval(self.config.get("general", "targetSize"))
+        configuration.executedFromBlender = eval(self.config.get("general", "executedFromBlender"))
 
         configuration.vertexLimit = self.config.getint("modifiers", "vertexlimit")
         configuration.smoothing = self.config.getboolean("modifiers", "smoothing")

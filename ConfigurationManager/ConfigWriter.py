@@ -32,7 +32,8 @@ class ConfigWriter:
 	def storeConfig(self, configuration):
 		config = ConfigParser()
 		config["general"] = {
-			"targetSize": str(configuration.targetSize)
+			"targetSize": str(configuration.targetSize),
+			"executedFromBlender": str(configuration.executedFromBlender)
 		}
 
 		config["modifiers"] = {

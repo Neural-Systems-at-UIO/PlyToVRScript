@@ -10,6 +10,7 @@ def export_all_fbx(exportFolder):
         exportName = os.path.abspath(os.path.join(exportFolder, object.name)) + '.fbx'
         bpy.ops.export_scene.fbx(filepath=exportName, use_selection=True, object_types={'MESH'}, apply_unit_scale=True,
                                  path_mode='ABSOLUTE')
+        print("Exported: " + exportFolder)
 
 
 def import_stl(folderPath, fileName):

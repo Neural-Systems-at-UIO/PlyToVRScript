@@ -12,13 +12,21 @@ def updateOutputWindow():
 	print("running blender...")
 	command = ["blender", "--background", "--python", "../BlenderTest.py"]
 	#command = [sys.executable, "-u", "testSubProcess.py"]
-	blenderProcess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+	blenderProcess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	for stdout_line in iter(blenderProcess.stdout.readline, ""):
 		print(stdout_line)
 		outputTextBox.configure(state='normal')
 		outputTextBox.insert('end', stdout_line)
 		outputTextBox.configure(state='disabled')
+
+	for stdout_line in iter(blenderProcess.stderr.readline, ""):
+		print(stdout_line)
+		outputTextBox.configure(state='normal')
+		outputTextBox.insert('end', stdout_line)
+		outputTextBox.configure(state='disabled')
+
 	blenderProcess.stdout.close()
+	blenderProcess.stderr.close()
 
 
 # return_code = blenderProcess.wait()
@@ -26,6 +34,12 @@ def updateOutputWindow():
 # 	raise subprocess.CalledProcessError(return_code, command)
 
 def runCommand():
+	confgReader = ConfigReader.ConfigReader()
+	configuration = confgReader.readConfig()
+	configuration.executedFromBlender = False
+	confgWriter = ConfigWriter.ConfigWriter()
+	confgWriter.storeConfig(configuration)
+
 	t = threading.Thread(target=updateOutputWindow)
 	t.daemon = True  # close pipe if GUI process exits
 	t.start()

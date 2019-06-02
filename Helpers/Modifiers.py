@@ -4,6 +4,7 @@ import bpy
 import numpy
 
 
+
 def smoothMeshes():
     for mesh in bpy.data.objects:
         if mesh.type == 'MESH':
@@ -33,8 +34,11 @@ def decimateMeshes(decRatio):
         mesh.select = False
 
 
-def normalize_scale(targetSize):  # numpy.array([1.0, 1.0, 1.0])
-    bpy.context.area.type = 'VIEW_3D'
+def normalize_scale(targetSize, executedFromBlender):  # numpy.array([1.0, 1.0, 1.0])
+    print("ewqweqweq")
+    if executedFromBlender:
+        print("asdasdasda")
+        bpy.context.area.type = 'VIEW_3D'
 
     maxX = maxY = maxZ = 0
     minX = minY = minZ = 999999999
@@ -75,7 +79,9 @@ def normalize_scale(targetSize):  # numpy.array([1.0, 1.0, 1.0])
         if mesh.type == 'MESH':
             mesh.location = (0, 0, 0)
 
-    bpy.context.area.type = 'TEXT_EDITOR'
+    if executedFromBlender:
+        print("asdasdasda")
+        bpy.context.area.type = 'TEXT_EDITOR'
 
 
 def cleanAllDecimateModifiers(obj):

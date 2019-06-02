@@ -59,7 +59,8 @@ print("Number of verts before reduction is " + str(totalVertexCount))
 
 totalVertexCountAfter = 0
 
-if totalVertexCount > configuration.vertexLimit:
+if totalVertexCount > configuration.vertexLimit and configuration.decimate:
+    print("Decimating. Target: " + str(configuration.vertexLimit))
     ratio = configuration.vertexLimit / totalVertexCount
     decimateMeshes(ratio)
 
@@ -73,14 +74,16 @@ bpy.ops.object.select_all(action='DESELECT')
 # Remove junk and bloat data
 removeJunk()
 
-normalize_scale(configuration.targetSize)
+normalize_scale(configuration.targetSize, configuration.executedFromBlender)
 
 if configuration.smoothing:
+    print("Smoothing.")
     smoothMeshes()
 
 # Export processed files
 if configuration.exportToFBX:
+    print("Exporting to FBX.")
     export_all_fbx(configuration.folderPath)
 
-    print("Number of verts after reduction is " + str(totalVertexCountAfter))
-    print("Execution time " + str(time.time() - startTime))
+print("Number of verts after reduction is " + str(totalVertexCountAfter))
+print("Execution time " + str(time.time() - startTime))
