@@ -8,7 +8,7 @@ import ast
 import subprocess
 import threading
 
-def updateOutputWindow():
+def startBlenderThread():
 	print("running blender...")
 	command = ["blender", "--python", "../BlenderTest.py"]
 	if openGUI.get() is 0:
@@ -30,6 +30,12 @@ def updateOutputWindow():
 	blenderProcess.stdout.close()
 	blenderProcess.stderr.close()
 
+	confgReader = ConfigReader.ConfigReader()
+	configuration = confgReader.readConfig()
+	configuration.executedFromBlender = False
+	confgWriter = ConfigWriter.ConfigWriter()
+	confgWriter.storeConfig(configuration)
+
 
 # return_code = blenderProcess.wait()
 # if return_code:
@@ -42,7 +48,7 @@ def runCommand():
 	confgWriter = ConfigWriter.ConfigWriter()
 	confgWriter.storeConfig(configuration)
 
-	t = threading.Thread(target=updateOutputWindow)
+	t = threading.Thread(target=startBlenderThread)
 	t.daemon = True  # close pipe if GUI process exits
 	t.start()
 
