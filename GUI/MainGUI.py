@@ -32,7 +32,7 @@ def startBlenderThread():
 
 	confgReader = ConfigReader.ConfigReader()
 	configuration = confgReader.readConfig()
-	configuration.executedFromBlender = False
+	configuration.executedFromBlender = True
 	confgWriter = ConfigWriter.ConfigWriter()
 	confgWriter.storeConfig(configuration)
 
