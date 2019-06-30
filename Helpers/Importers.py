@@ -13,8 +13,8 @@ def export_all_fbx(exportFolder):
         print("Exported: " + exportFolder)
 
 
-def import_stl(folderPath, fileName):
-    bpy.ops.import_mesh.stl(filepath=os.path.abspath(os.path.join(folderPath, fileName)))
+def import_stl(filePath):
+    bpy.ops.import_mesh.stl(filepath=os.path.abspath(os.path.join(filePath)))
     activeObject = bpy.context.active_object
     activeObject.name = fileName[:-4]
     mat = bpy.data.materials.get("Material")
@@ -25,8 +25,8 @@ def import_stl(folderPath, fileName):
     mat.use_vertex_color_paint = True
 
 
-def import_dae(folderPath, fileName):
-    bpy.ops.wm.collada_import(filepath=os.path.abspath(os.path.join(folderPath, fileName)))
+def import_dae(filePath):
+    bpy.ops.wm.collada_import(filepath=os.path.abspath(os.path.join(filePath)))
     bpy.ops.object.join()
     activeObject = bpy.context.active_object
     activeObject.name = fileName[:-4]
