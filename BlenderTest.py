@@ -28,15 +28,16 @@ class BlenderProcessor:
             o.select = True
 
         bpy.ops.object.delete()
-        print(configuration.folderPath)
+        print(subFolder)
         for subFile in os.listdir(subFolder):
-            filePath = os.path.join(configuration.folderPath, subFile)
+            filePath = os.path.join(subFolder, subFile)
+            print(filePath)
             if os.path.isfile(filePath):
                 if filePath.endswith("stl") and 'stl' in configuration.fileTypeToImport:
-                    import_stl(filePath)
+                    import_stl(subFolder, subFile)
                     print("Importing " + filePath)
                 if filePath.endswith("dae") and 'dae' in configuration.fileTypeToImport:
-                    import_dae(filePath)
+                    import_dae(subFolder, subFile)
                     print("Importing " + filePath)
 
         # bpy.ops.wm.save_mainfile(filepath="") Bruk denne for lagring av blender filene.
@@ -76,7 +77,7 @@ class BlenderProcessor:
         # Export processed files
         if configuration.exportToFBX:
             print("Exporting to FBX.")
-            export_all_fbx(configuration.folderPath)
+            export_all_fbx(subFolder + "/fbx")
 
         print("Number of verts after reduction is " + str(totalVertexCountAfter))
         print("Execution time " + str(time.time() - startTime))
@@ -91,5 +92,6 @@ processor = BlenderProcessor()
 
 for filename in os.listdir(topConfiguration.folderPath):
     fullPath = os.path.join(topConfiguration.folderPath, filename)
+    print("Considering " + fullPath)
     if os.path.isdir(fullPath):
         processor.processFolder(topConfiguration, fullPath)
