@@ -22,23 +22,20 @@ class BlenderProcessor:
 
     @staticmethod
     def processFolder(configuration, subFolder):
+        print("Processing " + subFolder)
         startTime = time.time()
 
         for o in bpy.data.objects:
             o.select = True
 
         bpy.ops.object.delete()
-        print(subFolder)
         for subFile in os.listdir(subFolder):
             filePath = os.path.join(subFolder, subFile)
-            print(filePath)
             if os.path.isfile(filePath):
                 if filePath.endswith("stl") and 'stl' in configuration.fileTypeToImport:
                     import_stl(subFolder, subFile)
-                    print("Importing " + filePath)
                 if filePath.endswith("dae") and 'dae' in configuration.fileTypeToImport:
                     import_dae(subFolder, subFile)
-                    print("Importing " + filePath)
 
         # bpy.ops.wm.save_mainfile(filepath="") Bruk denne for lagring av blender filene.
 
