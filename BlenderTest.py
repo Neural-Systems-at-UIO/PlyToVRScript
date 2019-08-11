@@ -55,7 +55,7 @@ class BlenderProcessor:
             ratio = configuration.vertexLimit / totalVertexCount
             decimateMeshes(ratio)
 
-        colourObjects()
+        colourObjects(subFolder)
 
         for mesh in bpy.data.objects:
             if mesh.type == 'MESH':

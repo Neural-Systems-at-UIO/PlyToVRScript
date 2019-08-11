@@ -1,3 +1,4 @@
+import os
 import random
 
 import bpy
@@ -101,7 +102,31 @@ def removeJunk():
     bpy.ops.object.delete()
 
 
-def colourObjects():
+def getSubModelID(name):
+    subModelID = -1
+    try:
+        subModelID = int(name[0:name.index("-")])
+    except:
+        subModelID = int(name[name.index("_v2")+3:])
+    return subModelID
+
+
+def colourObjects(currentFolderPath):
+    # Assumes there is exactly one txt file and that it is the atlas
+    atlasPath = "does not exist"
+    colourDict = dict()
+    for file in os.listdir(currentFolderPath):
+        if file.endswith(".txt"):
+            atlasPath = os.path.join(currentFolderPath, file)
+            f = open(atlasPath, "r")
+            for line in f:
+                if line.startswith("#"):
+                    continue
+                splitLine = line.split()
+                colourDict[int(splitLine[0])] = splitLine
+            break
+
+
     bpy.ops.object.select_all(action='DESELECT')
     for obj in bpy.data.objects:
         if obj.type != 'MESH':
@@ -109,7 +134,19 @@ def colourObjects():
 
         obj.select = True
 
-        rgb = [random.random() for i in range(3)]
+        if colourDict:
+            obj_name = bpy.context.active_object.name
+            print(obj_name)
+            subModelID = getSubModelID(obj_name)
+            if subModelID not in colourDict:
+                print("Missing colour mapping from Atlas. Was looking for " + str(subModelID))
+                rgb = [0.8, 0.8, 0.8]
+            else:
+                rgb = [float(colourDict[subModelID][1])/255, float(colourDict[subModelID][2])/255, float(colourDict[subModelID][3])/255]
+        else:
+            print("Random")
+            rgb = [random.random() for i in range(3)]
+
         bpy.context.scene.objects.active = obj
 
         mat = bpy.data.materials.new("PKHG")
@@ -124,5 +161,3 @@ def colourObjects():
             obj.data.materials.append(mat)
 
         obj.select = False
-
-

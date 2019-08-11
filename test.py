@@ -1,4 +1,4 @@
 import os
 
-for filename in os.listdir("C:\Projects\PlyToVRScript\SourceData"):
-    print(filename)
+s = "ljahslkdhakjshd_v200000000000312"
+print(int(s[s.index("_v2")+3:]))

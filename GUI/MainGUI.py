@@ -8,8 +8,16 @@ import ast
 import subprocess
 import threading
 
+def printGUI(text):
+	outputTextBox.configure(state='normal')
+	outputTextBox.insert('end', text)
+	outputTextBox.configure(state='disabled')
+	outputTextBox.see(END)
+
 def startBlenderThread():
-	print("running blender...")
+	runbtn.config(state="disabled")
+	print("Running blender...")
+	printGUI("Running blender...")
 	command = ["blender", "--python", "../BlenderTest.py"]
 	if openGUI.get() is 0:
 		command.insert(1, "--background")
@@ -17,15 +25,11 @@ def startBlenderThread():
 	blenderProcess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	for stdout_line in iter(blenderProcess.stdout.readline, ""):
 		print(stdout_line)
-		outputTextBox.configure(state='normal')
-		outputTextBox.insert('end', stdout_line)
-		outputTextBox.configure(state='disabled')
+		printGUI(stdout_line)
 
 	for stdout_line in iter(blenderProcess.stderr.readline, ""):
 		print(stdout_line)
-		outputTextBox.configure(state='normal')
-		outputTextBox.insert('end', stdout_line)
-		outputTextBox.configure(state='disabled')
+		printGUI(stdout_line)
 
 	blenderProcess.stdout.close()
 	blenderProcess.stderr.close()
@@ -35,6 +39,7 @@ def startBlenderThread():
 	configuration.executedFromBlender = True
 	confgWriter = ConfigWriter.ConfigWriter()
 	confgWriter.storeConfig(configuration)
+	runbtn.config(state="normal")
 
 
 # return_code = blenderProcess.wait()
