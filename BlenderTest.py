@@ -76,6 +76,7 @@ class BlenderProcessor:
             print("Exporting to FBX.")
             export_all_fbx(subFolder + "/fbx")
 
+        bpy.ops.wm.save_as_mainfile(filepath=os.path.join(subFolder, "project.blend"))
         print("Number of verts after reduction is " + str(totalVertexCountAfter))
         print("Execution time " + str(time.time() - startTime))
 
