@@ -26,7 +26,7 @@ def import_stl(folderPath, fileName):
 		# create material
 		mat = bpy.data.materials.new(name="Material")
 
-	mat.use_vertex_color_paint = True
+	#mat.use_vertex_color_paint_set(state=True)
 
 
 def import_dae(folderPath, fileName):

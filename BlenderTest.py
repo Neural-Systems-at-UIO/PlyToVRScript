@@ -26,7 +26,7 @@ class BlenderProcessor:
         startTime = time.time()
 
         for o in bpy.data.objects:
-            o.select = True
+            o.select_set(state=True)
 
         bpy.ops.object.delete()
         for subFile in os.listdir(subFolder):

@@ -1,4 +1,3 @@
-import os
+from Helpers.Modifiers import *
 
-s = "ljahslkdhakjshd_v200000000000312"
-print(int(s[s.index("_v2")+3:]))
+colourObjects("C:/Projects/PlyToVRScript/SourceData/WHSv2_rat_full")

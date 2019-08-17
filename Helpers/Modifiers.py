@@ -1,5 +1,6 @@
 import os
 import random
+import time
 
 import bpy
 import numpy
@@ -9,14 +10,14 @@ import numpy
 def smoothMeshes():
     for mesh in bpy.data.objects:
         if mesh.type == 'MESH':
-            mesh.select = True
-            bpy.context.scene.objects.active = mesh
+            mesh.select_set(state=True)
+            bpy.context.view_layer.objects.active = mesh
             mesh.modifiers.new('smoothingMod', type='SMOOTH')
             mesh.modifiers['smoothingMod'].factor = 1.0
             mesh.modifiers['smoothingMod'].iterations = 5.0
             bpy.ops.object.mode_set(mode='OBJECT')
             bpy.ops.object.modifier_apply(apply_as='DATA', modifier='smoothingMod')
-            mesh.select = False
+            mesh.select_set(state=False)
 
 
 def decimateMeshes(decRatio):
@@ -25,14 +26,14 @@ def decimateMeshes(decRatio):
     for mesh in bpy.data.objects:
         if mesh.type != 'MESH':
             continue
-        mesh.select = True
-        bpy.context.scene.objects.active = mesh
+        mesh.select_set(state=True)
+        bpy.context.view_layer.objects.active = mesh
         modifier = mesh.modifiers.new(modifierName, 'DECIMATE')
         modifier.ratio = decRatio
         modifier.use_collapse_triangulate = True
         bpy.ops.object.mode_set(mode='OBJECT')
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier=modifierName)
-        mesh.select = False
+        mesh.select_set(state=False)
 
 
 def normalize_scale(targetSize, executedFromBlender):  # numpy.array([1.0, 1.0, 1.0])
@@ -47,7 +48,7 @@ def normalize_scale(targetSize, executedFromBlender):  # numpy.array([1.0, 1.0, 
 
     for mesh in bpy.data.objects:
         if mesh.type == 'MESH':
-            mesh.select = True
+            mesh.select_set(state=True)
             x, y, z = mesh.dimensions
             maxX = max(maxX, x)
             minX = min(minX, x)
@@ -94,11 +95,11 @@ def cleanAllDecimateModifiers(obj):
 def removeJunk():
     for mesh in bpy.data.objects:
         if '.001' in mesh.name:
-            mesh.select = True
+            mesh.select_set(state=True)
         if 'node' in mesh.name:
-            mesh.select = True
+            mesh.select_set(state=True)
         if 'light' in mesh.name:
-            mesh.select = True
+            mesh.select_set(state=True)
     bpy.ops.object.delete()
 
 
@@ -132,7 +133,8 @@ def colourObjects(currentFolderPath):
         if obj.type != 'MESH':
             continue
 
-        obj.select = True
+        bpy.context.view_layer.objects.active = obj
+        obj.select_set(state=True)
 
         if colourDict:
             obj_name = bpy.context.active_object.name
@@ -140,17 +142,17 @@ def colourObjects(currentFolderPath):
             subModelID = getSubModelID(obj_name)
             if subModelID not in colourDict:
                 print("Missing colour mapping from Atlas. Was looking for " + str(subModelID))
-                rgb = [0.8, 0.8, 0.8]
+                rgba = [0.8, 0.8, 0.8, 1.0]
             else:
-                rgb = [float(colourDict[subModelID][1])/255, float(colourDict[subModelID][2])/255, float(colourDict[subModelID][3])/255]
+                rgba = [float(colourDict[subModelID][1])/255, float(colourDict[subModelID][2])/255, float(colourDict[subModelID][3])/255, 1.0]
+                print(str(subModelID) + ' | ' + str(rgba) + ' | ' + str(colourDict[subModelID]))
         else:
             print("Random")
-            rgb = [random.random() for i in range(3)]
+            rgba = [random.random() for i in range(3)].append(1.0)
 
-        bpy.context.scene.objects.active = obj
 
-        mat = bpy.data.materials.new("PKHG")
-        mat.diffuse_color = rgb
+        mat = bpy.data.materials.new("atlasColour")
+        mat.diffuse_color = rgba
 
         # Assign it to object
         if obj.data.materials:
@@ -160,4 +162,5 @@ def colourObjects(currentFolderPath):
             # no slots
             obj.data.materials.append(mat)
 
-        obj.select = False
+        obj.select_set(state=False)
+        time.sleep(0.1)
