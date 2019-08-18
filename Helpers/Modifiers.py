@@ -134,7 +134,6 @@ def colourObjects(currentFolderPath):
             continue
 
         bpy.context.view_layer.objects.active = obj
-        obj.select_set(state=True)
 
         if colourDict:
             obj_name = bpy.context.active_object.name
@@ -162,5 +161,4 @@ def colourObjects(currentFolderPath):
             # no slots
             obj.data.materials.append(mat)
 
-        obj.select_set(state=False)
         time.sleep(0.1)
