@@ -1,5 +1,7 @@
+import time
 from tkinter import *
 from tkinter import filedialog
+from tkinter.ttk import Progressbar
 import tkinter as TKINTER
 from ConfigurationManager import Configuration
 from ConfigurationManager import ConfigWriter
@@ -15,6 +17,7 @@ def printGUI(text):
 	outputTextBox.see(END)
 
 def startBlenderThread():
+	p_bar.start(5)
 	runbtn.config(state="disabled")
 	storeConfiguration()
 	print("Running blender...")
@@ -41,6 +44,7 @@ def startBlenderThread():
 	confgWriter = ConfigWriter.ConfigWriter()
 	confgWriter.storeConfig(configuration)
 	runbtn.config(state="normal")
+	p_bar.stop()
 
 
 # return_code = blenderProcess.wait()
@@ -102,6 +106,7 @@ def loadConfiguration():
 	printConfiguration(configuration)
 
 
+
 window = Tk()
 
 window.title("Welcome to the ply converter")
@@ -149,11 +154,11 @@ filetypetoimportlabel.grid(column=0, sticky=TKINTER.W, row=10)
 filetypetoimport = Entry(window, width=122)
 filetypetoimport.grid(column=1, sticky=TKINTER.W, row=10)
 
-startbtn = Button(window, text="Store config", command=storeConfiguration)
-startbtn.grid(column=0, sticky=TKINTER.W, row=11)
+storeButton = Button(window, text="Store config", command=storeConfiguration)
+storeButton.grid(column=0, sticky=TKINTER.W, row=11)
 
-startbtn = Button(window, text="Read config", command=loadConfiguration)
-startbtn.grid(column=1, sticky=TKINTER.W, row=11)
+readButton = Button(window, text="Read config", command=loadConfiguration)
+readButton.grid(column=1, sticky=TKINTER.W, row=11)
 
 runbtn = Button(window, text="Run", command=runCommand)
 runbtn.grid(column=2, sticky=TKINTER.W, row=11)
@@ -170,6 +175,10 @@ openGUIlabel = Label(window, text="Open GUI")
 openGUIlabel.grid(column=1, sticky=TKINTER.E, row=12)
 openGUI = IntVar()
 Checkbutton(window, variable=openGUI).grid(column=2, sticky=TKINTER.W, row=12)
+
+
+p_bar = Progressbar(window, orient=HORIZONTAL, length=100,  mode='indeterminate')
+p_bar.grid(row=15, columnspan=1, column=0, sticky=TKINTER.W)
 
 loadConfiguration()
 
