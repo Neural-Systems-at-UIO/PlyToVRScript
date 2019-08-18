@@ -158,8 +158,13 @@ startbtn.grid(column=1, sticky=TKINTER.W, row=11)
 runbtn = Button(window, text="Run", command=runCommand)
 runbtn.grid(column=2, sticky=TKINTER.W, row=11)
 
-outputTextBox = Text(window, width=108, state='disabled', height=20)
-outputTextBox.grid(column=0, sticky=TKINTER.W, row=14, columnspan=3)
+txt_frm = Frame(window, width=108, height=20)
+txt_frm.grid(column=0, sticky=TKINTER.W, row=14, columnspan=3)
+outputTextBox = Text(txt_frm, width=108, state='disabled', height=20)
+outputTextBox.grid(row=0, column=0)
+scrollb = Scrollbar(txt_frm, command=outputTextBox.yview)
+scrollb.grid(row=0, column=1, sticky='nsew')
+outputTextBox['yscrollcommand'] = scrollb.set
 
 openGUIlabel = Label(window, text="Open GUI")
 openGUIlabel.grid(column=1, sticky=TKINTER.E, row=12)
