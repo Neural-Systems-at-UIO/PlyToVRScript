@@ -16,6 +16,7 @@ def printGUI(text):
 
 def startBlenderThread():
 	runbtn.config(state="disabled")
+	storeConfiguration()
 	print("Running blender...")
 	printGUI("Running blender...")
 	command = ["blender", "--python", "../BlenderTest.py"]
@@ -164,5 +165,7 @@ openGUIlabel = Label(window, text="Open GUI")
 openGUIlabel.grid(column=1, sticky=TKINTER.E, row=12)
 openGUI = IntVar()
 Checkbutton(window, variable=openGUI).grid(column=2, sticky=TKINTER.W, row=12)
+
+loadConfiguration()
 
 window.mainloop()
