@@ -25,7 +25,7 @@ def startBlenderThread():
 	command = ["blender", "--python", "../BlenderTest.py"]
 	if openGUI.get() is 0:
 		command.insert(1, "--background")
-	#command = [sys.executable, "-u", "testSubProcess.py"]
+
 	blenderProcess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	for stdout_line in iter(blenderProcess.stdout.readline, ""):
 		print(stdout_line)

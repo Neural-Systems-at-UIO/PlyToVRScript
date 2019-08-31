@@ -36,6 +36,8 @@ class BlenderProcessor:
                     import_stl(subFolder, subFile)
                 if filePath.endswith("dae") and 'dae' in configuration.fileTypeToImport:
                     import_dae(subFolder, subFile)
+                if filePath.endswith("obj") and 'dae' in configuration.fileTypeToImport:
+                    import_obj(subFolder, subFile)
 
         # bpy.ops.wm.save_mainfile(filepath="") Bruk denne for lagring av blender filene.
 

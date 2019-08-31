@@ -21,13 +21,6 @@ def import_stl(folderPath, fileName):
 	bpy.ops.import_mesh.stl(filepath=os.path.abspath(filePath))
 	activeObject = bpy.context.active_object
 	activeObject.name = fileName[:-4]
-	mat = bpy.data.materials.get("Material")
-	if mat is None:
-		# create material
-		mat = bpy.data.materials.new(name="Material")
-
-	#mat.use_vertex_color_paint_set(state=True)
-
 
 def import_dae(folderPath, fileName):
 	filePath = os.path.join(folderPath, fileName)
@@ -36,9 +29,11 @@ def import_dae(folderPath, fileName):
 	bpy.ops.object.join()
 	activeObject = bpy.context.active_object
 	activeObject.name = fileName[:-4]
-	mat = bpy.data.materials.get("Material")
-	if mat is None:
-		# create material
-		mat = bpy.data.materials.new(name="Material")
 
-	mat.use_vertex_color_paint = True
+def import_obj(folderPath, fileName):
+	filePath = os.path.join(folderPath, fileName)
+	print("Importing obj file " + filePath)
+	bpy.ops.import_scene.obj(filepath=os.path.abspath(filePath))
+	bpy.ops.object.join()
+	activeObject = bpy.context.active_object
+	activeObject.name = fileName[:-4]
