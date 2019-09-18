@@ -36,12 +36,7 @@ def decimateMeshes(decRatio):
         mesh.select_set(state=False)
 
 
-def normalize_scale(targetSize, executedFromBlender):  # numpy.array([1.0, 1.0, 1.0])
-    print("ewqweqweq")
-    if executedFromBlender:
-        print("asdasdasda")
-        bpy.context.area.type = 'VIEW_3D'
-
+def normalize_scale(targetSize):
     maxX = maxY = maxZ = 0
     minX = minY = minZ = 999999999
     bpy.ops.object.select_all(action='DESELECT')
@@ -72,23 +67,25 @@ def normalize_scale(targetSize, executedFromBlender):  # numpy.array([1.0, 1.0, 
             ctx['region'] = area.regions[-1]
             bpy.ops.view3d.view_selected(ctx)
             bpy.ops.view3d.snap_cursor_to_selected(ctx)
+            print("Updated origin")
             break
 
-    # bpy.ops.view3d.snap_cursor_to_selected()
-    bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-    # bpy.ops.view3d.snap_cursor_to_center()
-    for mesh in bpy.data.objects:
-        if mesh.type == 'MESH':
-            mesh.location = (0, 0, 0)
+    bpy.ops.object.select_all(action='DESELECT')
+    for obj in bpy.context.scene.objects:
 
-    if executedFromBlender:
-        print("asdasdasda")
-        bpy.context.area.type = 'TEXT_EDITOR'
+        # get the meshes
+        if obj.type == "MESH":
+            # select / reset origin / deselect
+            obj.select_set(state=True)
+            bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME')
+            obj.select_set(state=False)
+
+
 
 
 def cleanAllDecimateModifiers(obj):
     for m in obj.modifiers:
-        if (m.type == "DECIMATE"):
+        if m.type == "DECIMATE":
             obj.modifiers.remove(modifier=m)
 
 
@@ -127,7 +124,6 @@ def colourObjects(currentFolderPath):
                 colourDict[int(splitLine[0])] = splitLine
             break
 
-
     bpy.ops.object.select_all(action='DESELECT')
     for obj in bpy.data.objects:
         if obj.type != 'MESH':
@@ -144,18 +140,13 @@ def colourObjects(currentFolderPath):
                 rgba = [0.8, 0.8, 0.8, 1.0]
             else:
                 rgba = [float(colourDict[subModelID][1])/255, float(colourDict[subModelID][2])/255, float(colourDict[subModelID][3])/255, 1.0]
-                print(str(subModelID) + ' | ' + str(rgba) + ' | ' + str(colourDict[subModelID]))
         else:
-            print("Random")
             rgba = [random.random() for i in range(3)].append(1.0)
-
 
         mat = bpy.data.materials.new("atlasColour")
         mat.diffuse_color = rgba
 
-        # Assign it to object
         if obj.data.materials:
-            # assign to 1st material slot
             obj.data.materials[0] = mat
         else:
             # no slots

@@ -1,5 +1,6 @@
 import os
 import time
+import zipfile
 
 import bpy
 
@@ -67,7 +68,7 @@ class BlenderProcessor:
         # Remove junk and bloat data
         removeJunk()
 
-        normalize_scale(configuration.targetSize, configuration.executedFromBlender)
+        normalize_scale(configuration.targetSize)
 
         if configuration.smoothing:
             print("Smoothing.")
