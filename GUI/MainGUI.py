@@ -2,6 +2,7 @@ import time
 from tkinter import *
 from tkinter import filedialog
 from tkinter.ttk import Progressbar
+from tkinter import messagebox
 import tkinter as TKINTER
 from ConfigurationManager import Configuration
 from ConfigurationManager import ConfigWriter
@@ -10,13 +11,18 @@ import ast
 import subprocess
 import threading
 
+
 def printGUI(text):
 	outputTextBox.configure(state='normal')
 	outputTextBox.insert('end', text)
 	outputTextBox.configure(state='disabled')
 	outputTextBox.see(END)
 
+
 def startBlenderThread():
+	clickedYes = messagebox.askyesno("Confirm run", "Have you done all this? etc etc")
+	if not clickedYes:
+		return
 	p_bar.start(5)
 	runbtn.config(state="disabled")
 	storeConfiguration()
