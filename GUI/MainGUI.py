@@ -1,4 +1,3 @@
-import time
 from tkinter import *
 from tkinter import filedialog
 from tkinter.ttk import Progressbar
@@ -94,6 +93,7 @@ def storeConfiguration():
 	confgWriter = ConfigWriter.ConfigWriter()
 	confgWriter.storeConfig(configuration)
 	printConfiguration(configuration)
+	printGUI("Configuration stored successfully!\n")
 
 def loadConfiguration():
 	confgReader = ConfigReader.ConfigReader()
@@ -110,6 +110,7 @@ def loadConfiguration():
 	filetypetoimport.delete(0, 'end')
 	filetypetoimport.insert(0, str(configuration.fileTypeToImport))
 	printConfiguration(configuration)
+	printGUI("Configuration loaded successfully!\n")
 
 
 
@@ -177,7 +178,7 @@ scrollb = Scrollbar(txt_frm, command=outputTextBox.yview)
 scrollb.grid(row=0, column=1, sticky='nsew')
 outputTextBox['yscrollcommand'] = scrollb.set
 
-openGUIlabel = Label(window, text="Open GUI")
+openGUIlabel = Label(window, text="View model in Blender")
 openGUIlabel.grid(column=1, sticky=TKINTER.E, row=12)
 openGUI = IntVar()
 Checkbutton(window, variable=openGUI).grid(column=2, sticky=TKINTER.W, row=12)

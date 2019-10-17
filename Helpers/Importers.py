@@ -9,7 +9,7 @@ def export_all_fbx(exportFolder):
 	objects = bpy.data.objects
 	for object in objects:
 		bpy.ops.object.select_all(action='DESELECT')
-		object.select = True
+		object.select_set(state=True)
 		exportName = os.path.abspath(os.path.join(exportFolder, object.name)) + '.fbx'
 		bpy.ops.export_scene.fbx(filepath=exportName, use_selection=True, object_types={'MESH'}, apply_unit_scale=True, path_mode='ABSOLUTE')
 		print("Exported: " + exportFolder)
