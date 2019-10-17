@@ -9,6 +9,7 @@ from ConfigurationManager import ConfigReader
 import ast
 import subprocess
 import threading
+import winsound
 
 
 def printGUI(text):
@@ -27,7 +28,7 @@ def startBlenderThread():
 	storeConfiguration()
 	print("Running blender...")
 	printGUI("Running blender...")
-	command = ["blender", "--python", "../BlenderTest.py"]
+	command = ["blender", "--python", "BlenderTest.py"]
 	if openGUI.get() is 0:
 		command.insert(1, "--background")
 
@@ -50,6 +51,10 @@ def startBlenderThread():
 	confgWriter.storeConfig(configuration)
 	runbtn.config(state="normal")
 	p_bar.stop()
+
+	duration = 1000  # milliseconds
+	freq = 440  # Hz
+	winsound.Beep(freq, duration)
 
 
 # return_code = blenderProcess.wait()
