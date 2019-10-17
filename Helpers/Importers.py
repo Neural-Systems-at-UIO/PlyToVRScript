@@ -37,3 +37,12 @@ def import_obj(folderPath, fileName):
 	bpy.ops.object.join()
 	activeObject = bpy.context.active_object
 	activeObject.name = fileName[:-4]
+	
+def import_fbx(folderPath, fileName):
+	filePath = os.path.join(folderPath, fileName)
+	print("Importing fbx file " + filePath)
+	bpy.ops.import_scene.fbx(filepath=os.path.abspath(filePath))
+	bpy.ops.object.join()
+	activeObject = bpy.context.active_object
+	activeObject.name = fileName[:-4]
+	
