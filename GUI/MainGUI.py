@@ -12,7 +12,6 @@ from ConfigurationManager import ConfigReader
 import ast
 import subprocess
 import threading
-import winsound
 
 def printGUI(text):
     outputTextBox.configure(state='normal')
@@ -62,10 +61,8 @@ def startBlenderThread(configuration):
     confgWriter.storeConfig(configuration)
     runbtn.config(state="normal")
     p_bar.stop()
-    
-    duration = 1000  # milliseconds
-    freq = 440  # Hz
-    winsound.Beep(freq, duration)
+
+    print('\a')
 
 
 # return_code = blenderProcess.wait()
