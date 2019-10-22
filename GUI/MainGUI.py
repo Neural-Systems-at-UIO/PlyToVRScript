@@ -21,13 +21,14 @@ def printGUI(text):
     outputTextBox.see(END)
 
 
-def startBlenderThread():
+def startBlenderThread(configuration):
     clickedYes = messagebox.askyesno("Confirm run",
-                                     'Decimate er satt til x/Decimate er slaatt av\nDet er y modeller satt til '
-                                     'prosessering\nOther settings\nDont forget:\nMake sure that the files selected '
-                                     'are locally available (i.e. not a network drive)\nDelete is fine!\nMake sure the '
-                                     'computer will not power down during the process.\nA single model can use up to a '
-                                     'few hours depending on size, complexity and host hardware.\nMultiple models will '
+                                     'Decimate er satt til ' + str(configuration.decimate) +': ' + vertexlimit.get() +
+                                     '.\nDouble check the settings!\nDont forget:\nMake sure that the files selected '
+                                     'are locally available (i.e. not a network drive)\nDelete messages are '
+                                     'expected!\nMake sure the computer will not power down during the process. A '
+                                     'laptop running on battery will take longer.\nA single model can use up to a few '
+                                     'hours depending on size, complexity and host hardware.\nMultiple models will '
                                      'require a much longer period of time to complete.\nIf the colours seem off or '
                                      'are missing, refer to the readme.')
     if not clickedYes:
@@ -78,7 +79,7 @@ def runCommand():
     confgWriter = ConfigWriter.ConfigWriter()
     confgWriter.storeConfig(configuration)
     
-    t = threading.Thread(target=startBlenderThread)
+    t = threading.Thread(target=startBlenderThread(configuration))
     t.daemon = True  # close pipe if GUI process exits
     t.start()
 
@@ -150,32 +151,32 @@ selectfolderbtn.grid(column=2, sticky=TKINTER.W, row=0)
 lbl2 = Label(window, text="Settings:")
 lbl2.grid(column=0, sticky=TKINTER.W, row=4)
 
-targetsizelabel = Label(window, text="targetsize")
+targetsizelabel = Label(window, text="Target size")
 targetsizelabel.grid(column=0, sticky=TKINTER.W, row=5)
 targetsize = Entry(window, width=122)
 targetsize.grid(column=1, sticky=TKINTER.W, row=5)
 
-vertexlimitlabel = Label(window, text="vertexlimit")
+vertexlimitlabel = Label(window, text="Vertex limit")
 vertexlimitlabel.grid(column=0, sticky=TKINTER.W, row=6)
 vertexlimit = Entry(window, width=122)
 vertexlimit.grid(column=1, sticky=TKINTER.W, row=6)
 
-smoothinglabel = Label(window, text="smoothing")
+smoothinglabel = Label(window, text="Smoothing")
 smoothinglabel.grid(column=0, sticky=TKINTER.W, row=7)
 smoothing = IntVar()
 Checkbutton(window, width=122, variable=smoothing).grid(column=1, sticky=TKINTER.W, row=7)
 
-decimatelabel = Label(window, text="decimate")
+decimatelabel = Label(window, text="Decimate")
 decimatelabel.grid(column=0, sticky=TKINTER.W, row=8)
 decimate = IntVar()
 Checkbutton(window, width=122, variable=decimate).grid(column=1, sticky=TKINTER.W, row=8)
 
-exporttofbxlabel = Label(window, text="exporttofbx")
+exporttofbxlabel = Label(window, text="Export to FBX")
 exporttofbxlabel.grid(column=0, sticky=TKINTER.W, row=9)
 exporttofbx = IntVar()
 Checkbutton(window, width=122, variable=exporttofbx).grid(column=1, sticky=TKINTER.W, row=9)
 
-filetypetoimportlabel = Label(window, text="filetypetoimport")
+filetypetoimportlabel = Label(window, text="File types to import")
 filetypetoimportlabel.grid(column=0, sticky=TKINTER.W, row=10)
 filetypetoimport = Entry(window, width=122)
 filetypetoimport.grid(column=1, sticky=TKINTER.W, row=10)
@@ -183,7 +184,7 @@ filetypetoimport.grid(column=1, sticky=TKINTER.W, row=10)
 storeButton = Button(window, text="Store config", command=storeConfiguration)
 storeButton.grid(column=0, sticky=TKINTER.W, row=11)
 
-readButton = Button(window, text="Read config", command=loadConfiguration)
+readButton = Button(window, text="Load config", command=loadConfiguration)
 readButton.grid(column=1, sticky=TKINTER.W, row=11)
 
 runbtn = Button(window, text="Run", command=runCommand)
