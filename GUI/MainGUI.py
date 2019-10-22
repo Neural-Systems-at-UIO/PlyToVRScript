@@ -3,6 +3,9 @@ from tkinter import filedialog
 from tkinter.ttk import Progressbar
 from tkinter import messagebox
 import tkinter as TKINTER
+import sys
+import os
+sys.path.append(str(os.path.realpath(os.path.join(__file__, "../.."))))
 from ConfigurationManager import Configuration
 from ConfigurationManager import ConfigWriter
 from ConfigurationManager import ConfigReader
@@ -10,7 +13,6 @@ import ast
 import subprocess
 import threading
 import winsound
-
 
 def printGUI(text):
     outputTextBox.configure(state='normal')

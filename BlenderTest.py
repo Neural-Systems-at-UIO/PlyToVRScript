@@ -1,11 +1,13 @@
 import os
 import time
-import zipfile
+import sys
 
 import bpy
+sys.path.append(str(os.path.realpath(os.path.join(__file__, ".."))))
+from ConfigurationManager import ConfigReader
+
 
 ##############   PARAMETERS   ########################
-from ConfigurationManager.ConfigReader import ConfigReader
 from Helpers.Importers import import_stl, import_dae, import_obj, export_all_fbx
 from Helpers.Modifiers import decimateMeshes, colourObjects, removeJunk, normalize_scale, smoothMeshes
 
@@ -78,9 +80,9 @@ class BlenderProcessor:
         print("Execution time " + str(time.time() - startTime))
 
 
-configReader = ConfigReader()
+configReader = ConfigReader.ConfigReader()
 topConfiguration = configReader.readConfig()
-print("__FILE__: " + str(os.path.realpath(os.path.join(__file__, ".."))))
+
 ######################################################
 
 processor = BlenderProcessor()
