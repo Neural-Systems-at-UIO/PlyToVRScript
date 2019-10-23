@@ -64,11 +64,6 @@ def startBlenderThread(configuration):
 
     print('\a')
 
-
-# return_code = blenderProcess.wait()
-# if return_code:
-#     raise subprocess.CalledProcessError(return_code, command)
-
 def runCommand():
     confgReader = ConfigReader.ConfigReader()
     configuration = confgReader.readConfig()

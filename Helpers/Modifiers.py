@@ -60,27 +60,24 @@ def normalize_scale(targetSize):
         if mesh.type == 'MESH':
             mesh.scale = mesh.scale * maxUsableScale
 
-    for area in bpy.context.screen.areas:
-        if area.type == 'VIEW_3D':
-            ctx = bpy.context.copy()
-            ctx['area'] = area
-            ctx['region'] = area.regions[-1]
-            bpy.ops.view3d.view_selected(ctx)
-            bpy.ops.view3d.snap_cursor_to_selected(ctx)
-            print("Updated origin")
-            break
+    for window in bpy.context.window_manager.windows:
+        screen = window.screen
+    
+        for area in screen.areas:
+            if area.type == 'VIEW_3D':
+                override = {'window': window, 'screen': screen, 'area': area}
+                bpy.ops.screen.screen_full_area(override)
+                bpy.ops.object.select_all(action='SELECT')
+                #origin to geometry
+                bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
+                #cursor to centre
+                bpy.ops.view3d.snap_cursor_to_center()
+                #selection to cursor, use offset
+                bpy.ops.view3d.snap_selected_to_cursor(use_offset=True)
+                #origin to cursor
+                bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
 
     bpy.ops.object.select_all(action='DESELECT')
-    for obj in bpy.context.scene.objects:
-
-        # get the meshes
-        if obj.type == "MESH":
-            # select / reset origin / deselect
-            obj.select_set(state=True)
-            bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME')
-            obj.select_set(state=False)
-
-
 
 
 def cleanAllDecimateModifiers(obj):
