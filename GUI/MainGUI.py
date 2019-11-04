@@ -20,16 +20,25 @@ def printGUI(text):
     outputTextBox.see(END)
 
 
-def startBlenderThread(configuration):
+def showPopUp(configuration):
+    numModels = len([name for name in os.listdir(configuration.folderPath) if os.path.isdir(name)])
+    
     clickedYes = messagebox.askyesno("Confirm run",
-                                     'Decimate er satt til ' + str(configuration.decimate) +': ' + vertexlimit.get() +
-                                     '.\nDouble check the settings!\nDont forget:\nMake sure that the files selected '
-                                     'are locally available (i.e. not a network drive)\nDelete messages are '
+                                     'Working folder ' + configuration.folderPath + ' contains ' + str(numModels) +
+                                     ' model(s) ready for processing.\n'
+                                     'Decimate er satt til ' + str(configuration.decimate) + ': ' + vertexlimit.get() +
+                                     '.\nDouble check the settings!\nDont forget:\nMake sure that the model folder selected '
+                                     'is locally available (i.e. not a network drive)\nDelete messages are '
                                      'expected!\nMake sure the computer will not power down during the process. A '
                                      'laptop running on battery will take longer.\nA single model can use up to a few '
                                      'hours depending on size, complexity and host hardware.\nMultiple models will '
                                      'require a much longer period of time to complete.\nIf the colours seem off or '
                                      'are missing, refer to the readme.')
+    
+    return clickedYes
+
+def startBlenderThread(configuration):
+    clickedYes = showPopUp(configuration)
     if not clickedYes:
         return
     p_bar.start(5)
