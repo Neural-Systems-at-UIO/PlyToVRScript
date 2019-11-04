@@ -98,11 +98,7 @@ def removeJunk():
 
 
 def getSubModelID(name):
-    subModelID = -1
-    try:
-        subModelID = int(name[0:name.index("-")])
-    except:
-        subModelID = int(name[name.index("_v2")+3:])
+    subModelID = int(name[0:name.index("-")])
     return subModelID
 
 

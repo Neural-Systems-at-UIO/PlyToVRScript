@@ -5,6 +5,7 @@ from tkinter import messagebox
 import tkinter as TKINTER
 import sys
 import os
+
 sys.path.append(str(os.path.realpath(os.path.join(__file__, "../.."))))
 from ConfigurationManager import Configuration
 from ConfigurationManager import ConfigWriter
@@ -13,124 +14,138 @@ import ast
 import subprocess
 import threading
 
+
 def printGUI(text):
-    outputTextBox.configure(state='normal')
-    outputTextBox.insert('end', text)
-    outputTextBox.configure(state='disabled')
-    outputTextBox.see(END)
+	outputTextBox.configure(state='normal')
+	outputTextBox.insert('end', text)
+	outputTextBox.configure(state='disabled')
+	outputTextBox.see(END)
+
+
+def showErrorPopup(errorMessage):
+	messagebox.showerror("Error", errorMessage)
+	print("asdfghj")
 
 
 def showPopUp(configuration):
-    numModels = len([name for name in os.listdir(configuration.folderPath) if os.path.isdir(name)])
-    
-    clickedYes = messagebox.askyesno("Confirm run",
-                                     'Working folder ' + configuration.folderPath + ' contains ' + str(numModels) +
-                                     ' model(s) ready for processing.\n'
-                                     'Decimate er satt til ' + str(configuration.decimate) + ': ' + vertexlimit.get() +
-                                     '.\nDouble check the settings!\nDont forget:\nMake sure that the model folder selected '
-                                     'is locally available (i.e. not a network drive)\nDelete messages are '
-                                     'expected!\nMake sure the computer will not power down during the process. A '
-                                     'laptop running on battery will take longer.\nA single model can use up to a few '
-                                     'hours depending on size, complexity and host hardware.\nMultiple models will '
-                                     'require a much longer period of time to complete.\nIf the colours seem off or '
-                                     'are missing, refer to the readme.')
-    
-    return clickedYes
+	numModels = len([name for name in os.listdir(configuration.folderPath) if os.path.isdir(name)])
+	
+	clickedYes = messagebox.askyesno("Confirm run",
+	                                 'Working folder ' + configuration.folderPath + ' contains ' + str(numModels) +
+	                                 ' model(s) ready for processing.\n'
+	                                 'Decimate er satt til ' + str(configuration.decimate) + ': ' + vertexlimit.get() +
+	                                 '.\nDouble check the settings!\nDont forget:\nMake sure that the model folder selected '
+	                                 'is locally available (i.e. not a network drive)\nDelete messages are '
+	                                 'expected!\nMake sure the computer will not power down during the process. A '
+	                                 'laptop running on battery will take longer.\nA single model can use up to a few '
+	                                 'hours depending on size, complexity and host hardware.\nMultiple models will '
+	                                 'require a much longer period of time to complete.\nIf the colours seem off or '
+	                                 'are missing, refer to the readme.')
+	
+	return clickedYes
+
 
 def startBlenderThread(configuration):
-    clickedYes = showPopUp(configuration)
-    if not clickedYes:
-        return
-    p_bar.start(5)
-    runbtn.config(state="disabled")
-    storeConfiguration()
-    print("Running blender...")
-    printGUI("Running blender...")
-    command = ["blender", "--python", "BlenderTest.py"]
-    if openGUI.get() is 0:
-        command.insert(1, "--background")
-    
-    blenderProcess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                      universal_newlines=True)
-    for stdout_line in iter(blenderProcess.stdout.readline, ""):
-        print(stdout_line)
-        printGUI(stdout_line)
-    
-    for stdout_line in iter(blenderProcess.stderr.readline, ""):
-        print(stdout_line)
-        printGUI(stdout_line)
-    
-    blenderProcess.stdout.close()
-    blenderProcess.stderr.close()
-    
-    confgReader = ConfigReader.ConfigReader()
-    configuration = confgReader.readConfig()
-    confgWriter = ConfigWriter.ConfigWriter()
-    confgWriter.storeConfig(configuration)
-    runbtn.config(state="normal")
-    p_bar.stop()
+	p_bar.start(5)
+	runbtn.config(state="disabled")
+	print("Running blender...")
+	printGUI("Running blender...")
+	command = ["blender", "--python", "blender_controller.py"]
+	if openGUI.get() is 0:
+		command.insert(1, "--background")
+	
+	blenderProcess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+	                                  universal_newlines=True)
+	for stdout_line in iter(blenderProcess.stdout.readline, ""):
+		print(stdout_line)
+		printGUI(stdout_line)
+	
+	for stdout_line in iter(blenderProcess.stderr.readline, ""):
+		print(stdout_line)
+		printGUI(stdout_line)
+	
+	blenderProcess.stdout.close()
+	blenderProcess.stderr.close()
+	
+	confgReader = ConfigReader.ConfigReader()
+	configuration = confgReader.readConfig()
+	confgWriter = ConfigWriter.ConfigWriter()
+	confgWriter.storeConfig(configuration)
+	runbtn.config(state="normal")
+	p_bar.stop()
+	
+	print('\a')
 
-    print('\a')
 
 def runCommand():
-    confgReader = ConfigReader.ConfigReader()
-    configuration = confgReader.readConfig()
-    confgWriter = ConfigWriter.ConfigWriter()
-    confgWriter.storeConfig(configuration)
-    
-    t = threading.Thread(target=startBlenderThread, args=(configuration,))
-    t.daemon = True  # close pipe if GUI process exits
-    t.start()
+	try:
+		storeConfiguration()
+		confgReader = ConfigReader.ConfigReader()
+		configuration = confgReader.readConfig()
+	except ValueError:
+		return
+	
+	clickedYes = showPopUp(configuration)
+	if not clickedYes:
+		return
+	
+	t = threading.Thread(target=startBlenderThread, args=(configuration,))
+	t.daemon = True  # close pipe if GUI process exits
+	t.start()
 
 
 def setSourceFolder():
-    file = filedialog.askdirectory()
-    sourceFolder.delete(0, 'end')
-    sourceFolder.insert(0, str(file))
+	file = filedialog.askdirectory()
+	sourceFolder.delete(0, 'end')
+	sourceFolder.insert(0, str(file))
 
 
 def printConfiguration(configuration):
-    print("Target Size: " + str(type(configuration.targetSize)) + " : " + str(configuration.targetSize))
-    print("Vertex Limit: " + str(type(configuration.vertexLimit)) + " : " + str(configuration.vertexLimit))
-    print("Smoothing: " + str(type(configuration.smoothing)) + " : " + str(configuration.smoothing))
-    print("Decimate: " + str(type(configuration.decimate)) + " : " + str(configuration.decimate))
-    print("ExportToFbx: " + str(type(configuration.exportToFBX)) + " : " + str(configuration.exportToFBX))
-    print("File Types: " + str(type(configuration.fileTypeToImport)) + " : " + str(configuration.fileTypeToImport))
-    print("Source file path: " + str(type(configuration.folderPath)) + " : " + str(configuration.folderPath))
+	print("Target Size: " + str(type(configuration.targetSize)) + " : " + str(configuration.targetSize))
+	print("Vertex Limit: " + str(type(configuration.vertexLimit)) + " : " + str(configuration.vertexLimit))
+	print("Smoothing: " + str(type(configuration.smoothing)) + " : " + str(configuration.smoothing))
+	print("Decimate: " + str(type(configuration.decimate)) + " : " + str(configuration.decimate))
+	print("ExportToFbx: " + str(type(configuration.exportToFBX)) + " : " + str(configuration.exportToFBX))
+	print("File Types: " + str(type(configuration.fileTypeToImport)) + " : " + str(configuration.fileTypeToImport))
+	print("Source file path: " + str(type(configuration.folderPath)) + " : " + str(configuration.folderPath))
 
 
 def storeConfiguration():
-    configuration = Configuration.Configuration()
-    configuration.decimate = bool(decimate.get())
-    configuration.smoothing = bool(smoothing.get())
-    configuration.targetSize = ast.literal_eval("[" + targetsize.get() + "]")
-    configuration.exportToFBX = bool(exporttofbx.get())
-    configuration.folderPath = sourceFolder.get()
-    configuration.vertexLimit = int(vertexlimit.get())
-    configuration.fileTypeToImport = ast.literal_eval(
-        "[\'" + "".join(filetypetoimport.get().split()).replace(",", "\',\'") + "\']")
-    confgWriter = ConfigWriter.ConfigWriter()
-    confgWriter.storeConfig(configuration)
-    printConfiguration(configuration)
-    printGUI("Configuration stored successfully!\n")
+	try:
+		configuration = Configuration.Configuration()
+		configuration.decimate = bool(decimate.get())
+		configuration.smoothing = bool(smoothing.get())
+		configuration.targetSize = ast.literal_eval("[" + targetsize.get() + "]")
+		configuration.exportToFBX = bool(exporttofbx.get())
+		configuration.folderPath = sourceFolder.get()
+		configuration.vertexLimit = int(vertexlimit.get())
+		configuration.fileTypeToImport = ast.literal_eval(
+			"[\'" + "".join(filetypetoimport.get().split()).replace(",", "\',\'") + "\']")
+		confgWriter = ConfigWriter.ConfigWriter()
+		confgWriter.storeConfig(configuration)
+		printConfiguration(configuration)
+		printGUI("Configuration stored successfully!\n")
+	except:
+		showErrorPopup("Invalid settings. Please check your input.")
+		raise ValueError("Invalid settings")
 
 
 def loadConfiguration():
-    confgReader = ConfigReader.ConfigReader()
-    configuration = confgReader.readConfig()
-    decimate.set(configuration.decimate)
-    smoothing.set(configuration.smoothing)
-    targetsize.delete(0, 'end')
-    targetsize.insert(0, str(','.join(str(e) for e in configuration.targetSize)))
-    exporttofbx.set(configuration.exportToFBX)
-    sourceFolder.delete(0, 'end')
-    sourceFolder.insert(0, configuration.folderPath)
-    vertexlimit.delete(0, 'end')
-    vertexlimit.insert(0, configuration.vertexLimit)
-    filetypetoimport.delete(0, 'end')
-    filetypetoimport.insert(0, str(','.join(configuration.fileTypeToImport)))
-    printConfiguration(configuration)
-    printGUI("Configuration loaded successfully!\n")
+	confgReader = ConfigReader.ConfigReader()
+	configuration = confgReader.readConfig()
+	decimate.set(configuration.decimate)
+	smoothing.set(configuration.smoothing)
+	targetsize.delete(0, 'end')
+	targetsize.insert(0, str(','.join(str(e) for e in configuration.targetSize)))
+	exporttofbx.set(configuration.exportToFBX)
+	sourceFolder.delete(0, 'end')
+	sourceFolder.insert(0, configuration.folderPath)
+	vertexlimit.delete(0, 'end')
+	vertexlimit.insert(0, configuration.vertexLimit)
+	filetypetoimport.delete(0, 'end')
+	filetypetoimport.insert(0, str(','.join(configuration.fileTypeToImport)))
+	printConfiguration(configuration)
+	printGUI("Configuration loaded successfully!\n")
 
 
 window = Tk()
