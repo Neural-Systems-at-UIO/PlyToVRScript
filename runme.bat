@@ -1,3 +1,3 @@
 @echo off
 
-python .\GUI\MainGUI.py
+start python .\GUI\MainGUI.py

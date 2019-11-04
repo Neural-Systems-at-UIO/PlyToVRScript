@@ -56,7 +56,6 @@ def startBlenderThread(configuration):
     
     confgReader = ConfigReader.ConfigReader()
     configuration = confgReader.readConfig()
-    configuration.executedFromBlender = True
     confgWriter = ConfigWriter.ConfigWriter()
     confgWriter.storeConfig(configuration)
     runbtn.config(state="normal")
@@ -67,11 +66,10 @@ def startBlenderThread(configuration):
 def runCommand():
     confgReader = ConfigReader.ConfigReader()
     configuration = confgReader.readConfig()
-    configuration.executedFromBlender = False
     confgWriter = ConfigWriter.ConfigWriter()
     confgWriter.storeConfig(configuration)
     
-    t = threading.Thread(target=startBlenderThread(configuration))
+    t = threading.Thread(target=startBlenderThread, args=(configuration,))
     t.daemon = True  # close pipe if GUI process exits
     t.start()
 
