@@ -51,7 +51,9 @@ There are two methods of launching the project:
 - Python not found
     - Install Python 3.7
 - Script is corrupt
-    - Download the script anew from the repository
+    - Download the script anew from the 
+- Model file names are wrong
+    - The file name must contain a numerical value, an integer, followed by a dash (-) and then the name of the model; e.g. 0001-some name.
 
 
 
