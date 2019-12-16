@@ -100,6 +100,8 @@ def removeJunk():
 def getSubModelID(name):
     try:
         subModelID = int(name[0:name.index("-")])
+        if subModelID is None:
+            raise ValueError("ModelID is None")
         return subModelID
     except ValueError:
         print("The file name is wrong. Make sure it starts with the numerical ID followed by a dash; e.g. 0001-someName")
