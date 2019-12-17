@@ -138,9 +138,9 @@ def colourObjects(currentFolderPath):
                 print("Missing colour mapping from Atlas. Was looking for " + str(subModelID))
                 rgba = [0.8, 0.8, 0.8, 1.0]
             else:
-                rgba = [float(colourDict[subModelID][1])/255, float(colourDict[subModelID][2])/255, float(colourDict[subModelID][3])/255, 1.0]
+                rgba = [float(colourDict[subModelID][1])/255.0, float(colourDict[subModelID][2])/255.0, float(colourDict[subModelID][3])/255.0, 1.0]
         else:
-            rgba = [random.random() for i in range(3)].append(1.0)
+            rgba = [random.random(), random.random(), random.random(), 1.0]
 
         mat = bpy.data.materials.new("atlasColour")
         mat.diffuse_color = rgba
